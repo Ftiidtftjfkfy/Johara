@@ -1,0 +1,202 @@
+<html><head><base href="https://barbie-namegen.example">
+<title>Barbie Name Generator</title>
+<meta charset="UTF-8">
+<style>
+  body {
+    background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #fff;
+  }
+
+  .container {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(255, 20, 147, 0.3);
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .name-display {
+    font-size: 2rem;
+    margin: 1rem 0;
+    min-height: 60px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  button {
+    background: #FF1493;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    margin: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  button:hover {
+    background: #FF69B4;
+    transform: scale(1.05);
+  }
+
+  .categories {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .category-btn {
+    background: #FF69B4;
+    font-size: 0.9rem;
+    border-radius: 20px;
+  }
+
+  .category-btn.active {
+    background: white;
+    color: #FF1493;
+  }
+
+  @keyframes sparkle {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+      rgba(255, 255, 255, 0.1) 25%, 
+      transparent 25%, 
+      transparent 50%, 
+      rgba(255, 255, 255, 0.1) 50%, 
+      rgba(255, 255, 255, 0.1) 75%, 
+      transparent 75%, 
+      transparent);
+    background-size: 200% 200%;
+    animation: sparkle 15s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Barbie Name Generator</h1>
+  
+  <div class="categories">
+    <button class="category-btn active" data-category="barbie">Barbie</button>
+    <button class="category-btn" data-category="ken">Ken</button>
+    <button class="category-btn" data-category="dreamhouse">Dreamhouse</button>
+    <button class="category-btn" data-category="malibu">Malibu</button>
+  </div>
+
+  <div class="name-display" id="nameDisplay">Click generate to create your Barbie name! ✨</div>
+  
+  <button id="generateBtn">Generate Name 💖</button>
+</div>
+
+<script>
+const nameData = {
+  barbie: {
+    prefixes: ['Princess', 'Fashion', 'Sparkle', 'Glitter', 'Dream', 'Star', 'Crystal', 'Rainbow', 'Diamond', 'Magic'],
+    names: ['Barbara', 'Barbie', 'Blair', 'Bella', 'Bianca', 'Bridget', 'Bailey', 'Bliss', 'Bunny', 'Butterfly'],
+    titles: ['of Malibu', 'the Fabulous', 'the Dreamer', 'the Glamorous', 'the Magical', 'of Dreams', 'the Enchanted']
+  },
+  ken: {
+    prefixes: ['Beach', 'Surf', 'Cool', 'Rad', 'Awesome', 'Perfect', 'Dreamy', 'Golden', 'Charming', 'Dashing'],
+    names: ['Ken', 'Kenneth', 'Kent', 'Keith', 'Kevin', 'Kai', 'Kingston', 'Klaus', 'Kurt', 'Keegan'],
+    titles: ['of Beverly Hills', 'the Fantastic', 'the Magnificent', 'the Charming', 'the Stylish', 'of Paradise']
+  },
+  dreamhouse: {
+    prefixes: ['Villa', 'Mansion', 'Palace', 'Estate', 'Chateau', 'Manor', 'Castle', 'Beach House', 'Penthouse'],
+    suffixes: ['Dreams', 'Paradise', 'Sunshine', 'Starlight', 'Moonbeams', 'Rainbows', 'Hearts', 'Love', 'Joy']
+  },
+  malibu: {
+    prefixes: ['Sunny', 'Ocean', 'Beach', 'Palm', 'Coastal', 'Paradise', 'Sandy', 'Golden', 'Pacific'],
+    suffixes: ['Breeze', 'Wave', 'Shore', 'Sunset', 'Dream', 'Vista', 'Bay', 'Cove', 'Beach']
+  }
+};
+
+let currentCategory = 'barbie';
+
+function generateName(category) {
+  switch(category) {
+    case 'barbie':
+      const bPrefix = nameData.barbie.prefixes[Math.floor(Math.random() * nameData.barbie.prefixes.length)];
+      const bName = nameData.barbie.names[Math.floor(Math.random() * nameData.barbie.names.length)];
+      const bTitle = nameData.barbie.titles[Math.floor(Math.random() * nameData.barbie.titles.length)];
+      return `${bPrefix} ${bName} ${bTitle}`;
+    
+    case 'ken':
+      const kPrefix = nameData.ken.prefixes[Math.floor(Math.random() * nameData.ken.prefixes.length)];
+      const kName = nameData.ken.names[Math.floor(Math.random() * nameData.ken.names.length)];
+      const kTitle = nameData.ken.titles[Math.floor(Math.random() * nameData.ken.titles.length)];
+      return `${kPrefix} ${kName} ${kTitle}`;
+    
+    case 'dreamhouse':
+      const dPrefix = nameData.dreamhouse.prefixes[Math.floor(Math.random() * nameData.dreamhouse.prefixes.length)];
+      const dSuffix = nameData.dreamhouse.suffixes[Math.floor(Math.random() * nameData.dreamhouse.suffixes.length)];
+      return `The ${dPrefix} of ${dSuffix}`;
+    
+    case 'malibu':
+      const mPrefix = nameData.malibu.prefixes[Math.floor(Math.random() * nameData.malibu.prefixes.length)];
+      const mSuffix = nameData.malibu.suffixes[Math.floor(Math.random() * nameData.malibu.suffixes.length)];
+      return `${mPrefix} ${mSuffix}`;
+  }
+}
+
+document.getElementById('generateBtn').addEventListener('click', () => {
+  const nameDisplay = document.getElementById('nameDisplay');
+  nameDisplay.classList.remove('fade-in');
+  void nameDisplay.offsetWidth; // Trigger reflow
+  nameDisplay.classList.add('fade-in');
+  nameDisplay.textContent = generateName(currentCategory);
+});
+
+document.querySelectorAll('.category-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentCategory = e.target.dataset.category;
+  });
+});
+</script>
+</body></html>
